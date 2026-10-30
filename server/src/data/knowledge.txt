@@ -1,0 +1,29 @@
+What is RAG?
+RAG stands for Retrieval-Augmented Generation. It is an AI architectural framework that improves the quality of Large Language Model responses by grounding the model on external, retrieved knowledge sources before generating an answer. Instead of relying solely on information learned during training, a RAG system searches a knowledge base for relevant facts and provides them as context to the model.
+
+What is a Large Language Model (LLM)?
+A Large Language Model (LLM) is an artificial intelligence model trained on vast quantities of text to understand, summarize, and generate human language. LLMs predict the most statistically probable next words in a sequence. While LLMs excel at language reasoning, their internal knowledge is static, frozen at the time of training, and prone to hallucinations when asked about private or specific data.
+
+What is an Embedding Model and what are Embeddings?
+An embedding model is a specialized machine learning model designed to convert human text into numerical representations called vector embeddings. An embedding is an array of floating-point numbers (such as [0.024, -0.198, 0.441, ...]) that captures the semantic meaning of the text. Words and sentences with similar meanings are positioned close to each other in high-dimensional mathematical space.
+
+What is Chunking?
+Chunking is the process of breaking down a large document into smaller, manageable text segments called chunks before converting them into embeddings. Chunking is necessary because embedding models and LLMs have strict token limits. Moreover, smaller chunks allow the retrieval system to pinpoint the exact paragraphs relevant to a user query, preventing irrelevant text from cluttering the model's context window.
+
+What is Chunk Size and Chunk Overlap?
+Chunk size defines the maximum number of characters or tokens contained in each individual text piece. Chunk overlap is the amount of text shared between adjacent chunks. Overlap is crucial because it preserves the semantic context across boundaries, ensuring that a sentence or concept split across two chunks does not lose its meaning.
+
+What is a Vector Database and what is ChromaDB?
+A vector database is a specialized storage engine optimized to store, index, and query high-dimensional vector embeddings rapidly. Unlike traditional relational databases like PostgreSQL or document databases like MongoDB that search by exact keyword matches, vector databases search by semantic similarity. ChromaDB is an open-source, developer-friendly vector database designed specifically to build AI and RAG applications.
+
+What is Similarity Search?
+Similarity search is the algorithmic method used by vector databases to find records that are semantically related to a query vector. It compares the mathematical direction and distance between vectors using metrics like Cosine Similarity or Euclidean Distance. The closer two vectors are in vector space, the more semantically similar their textual meanings are.
+
+What is Context in RAG?
+Context refers to the specific document chunks retrieved from the vector database that are inserted into the prompt sent to the LLM. The context serves as the reference material or evidence that the LLM must study to answer the user's question accurately.
+
+What is Hallucination and how does RAG prevent it?
+A hallucination occurs when an LLM generates plausible-sounding but factually incorrect or fabricated statements with high confidence. RAG drastically minimizes hallucinations by providing verifiable reference text (the context) and instructing the LLM to base its answers strictly on that context, acknowledging when the context does not contain the answer.
+
+What are Prompt Engineering and Guardrails?
+Prompt engineering is the practice of crafting clear, structured instructions and constraints to guide an LLM toward producing desirable, accurate outputs. Guardrails are safety rules added to system prompts and backend code that enforce boundaries, such as preventing the model from answering questions outside its approved knowledge domain or rejecting malicious instructions.
