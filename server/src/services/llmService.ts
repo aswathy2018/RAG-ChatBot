@@ -73,7 +73,8 @@ export async function generateAnswer(
 // verification runner: test with both an answerable and unanswerable question
 async function verifyLLM() {
     console.log('--- Testing Google Gemini LLM Service ---');
-    // Test Case 1: An answerable question with matching context
+
+    // test case 1: an answerable question with matching context
     const sampleQuestion1 = 'What is chunking and why is it needed?';
     const sampleContext1 = [
         'What is Chunking?\nChunking is the process of breaking down a large document into smaller, manageable text segments called chunks before converting them into embeddings. Chunking is necessary because embedding models and LLMs have strict token limits. Moreover, smaller chunks allow the retrieval system to pinpoint the exact paragraphs relevant to a user query.'
@@ -81,10 +82,12 @@ async function verifyLLM() {
     console.log(`\n🧪 Test 1 (Answerable Question): "${sampleQuestion1}"`);
     const answer1 = await generateAnswer(sampleQuestion1, sampleContext1);
     console.log(`🤖 Knowly's Answer:\n${answer1}\n`);
-    // Small 3-second delay to respect Google's free-tier rate limits
+
+    // small 3-second delay to respect Google's free-tier rate limits
     console.log('⏳ Pausing 3 seconds to respect free-tier rate limits...');
     await new Promise((resolve) => setTimeout(resolve, 3000));
-    // Test Case 2: An unanswerable question (Checking guardrails!)
+    
+    // test case 2: an unanswerable question (checking guardrails!)
     const sampleQuestion2 = 'What is photosynthesis?';
     const sampleContext2 = [
         'What is Chunking?\nChunking is the process of breaking down a large document...'

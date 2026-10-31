@@ -5,8 +5,8 @@ const PORT: number = process.env.PORT ? parseInt(process.env.PORT, 10) : 5000;
 
 // starting the http server
 app.listen(PORT, () => {
-  console.log('.............');
+  console.log('.....................');
   console.log(`Knowly Server is running on port ${PORT}`);
   console.log(`http://localhost:${PORT}/health`);
-  console.log('.............');
+  console.log('.....................');
 });

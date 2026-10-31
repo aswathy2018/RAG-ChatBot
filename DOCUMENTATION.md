@@ -134,3 +134,35 @@ Knowly is a beginner-friendly Retrieval-Augmented Generation (RAG) assistant bui
   - The fundamental distinction between embedding models (representation) and LLMs (generation).
   - The role of temperature in controlling randomness.
   - The necessity of testing guardrails against unanswerable queries.
+
+
+
+  -------------------------------------------------------------------------------------------------
+
+## Step 9: Unified RAG Pipeline Service
+- **What was implemented**:
+  - Created `server/src/services/ragService.ts` unifying retrieval and generation.
+  - Implemented `askQuestion()` coordinating: Input validation → Similarity search → Prompt assembly → LLM generation → Response packaging.
+  - Added source attribution returning chunk IDs, similarity scores, and previews with every answer.
+- **Why an orchestrator service is essential**:
+  - Decouples AI business logic from the HTTP layer (Express routes).
+  - Ensures consistent error handling, rate-limit pauses, and guardrail enforcement.
+- **Key Concepts Learned**:
+  - The end-to-end RAG lifecycle.
+  - The value of source attribution for auditability and transparency.
+
+  
+
+  -------------------------------------------------------------------------------------------------
+
+## Step 10: Express Chat API Implementation
+- **What was implemented**:
+  - Created `chatController.ts` to validate requests and handle HTTP error responses.
+  - Created `chatRoutes.ts` exposing `POST /api/chat`.
+  - Mounted the router in `app.ts` under `/api`.
+  - Added strict input validation returning `400 Bad Request` for empty questions and `500 Internal Server Error` for server exceptions.
+- **Why RESTful design matters**:
+  - Standardizes how web browsers (like React) query the backend using standard JSON bodies and HTTP status codes (`200`, `400`, `500`).
+- **Key Concepts Learned**:
+  - Request body parsing via `express.json()`.
+  - Separation of routing concerns (`routes/`) from business logic (`controllers/`).

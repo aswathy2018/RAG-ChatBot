@@ -1,5 +1,6 @@
 import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
+import chatRoutes from './routes/chatRoutes.js';
 
 // it creates an instance of express application
 const app: Application = express();
@@ -18,5 +19,7 @@ app.get('/health', (req: Request, res: Response) => {
     timestamp: new Date().toISOString()
   });
 });
+
+app.use('/api', chatRoutes);
 
 export default app;
