@@ -84,3 +84,53 @@ Knowly is a beginner-friendly Retrieval-Augmented Generation (RAG) assistant bui
   - The difference between raw text, chunks, embeddings, embedding models, and LLMs.
   - Vector dimensions (e.g. 768 floating-point coordinates per text snippet).
   - Secure API key management via environment variables and `.gitignore`.
+
+
+
+-------------------------------------------------------------------------------------------------
+
+## Step 6: ChromaDB Vector Database Setup and Ingestion
+- **What was implemented**:
+  - Configured and launched ChromaDB as a local vector database running on port 8000.
+  - Installed the official `chromadb` npm client.
+  - Built `server/src/services/vectorStoreService.ts` to manage the complete ingestion pipeline.
+  - Used `collection.upsert()` to store IDs, 3072-dimensional embeddings, chunk texts, and metadata without creating duplicates on re-indexing.
+- **Why ChromaDB instead of MongoDB**:
+  - MongoDB handles keyword queries, transactional data, and metadata.
+  - ChromaDB uses specialized vector indexing (e.g. HNSW) to perform high-dimensional cosine similarity searches across embeddings in milliseconds.
+- **Key Concepts Learned**:
+  - ChromaDB core structure: Collections, Documents, Embeddings, Metadata, and IDs.
+  - The `upsert` pattern for idempotent document ingestion.
+
+
+
+  -------------------------------------------------------------------------------------------------
+
+## Step 7: Similarity Search Implementation
+- **What was implemented**:
+  - Implemented `searchSimilarChunks(query, topK)` in `server/src/services/vectorStoreService.ts`.
+  - Added vector comparison using Cosine Similarity: `(A · B) / (||A|| * ||B||)`.
+  - Added ranking and extraction of top-K most semantically similar chunks.
+- **Why similarity search is needed before generation**:
+  - Validates that the retrieval pipeline accurately finds the correct knowledge paragraphs before involving the LLM.
+- **Key Concepts Learned**:
+  - How Cosine Similarity quantifies the angle between high-dimensional vectors.
+  - The parameter `topK` and its role in limiting context length.
+  - Why similarity scores reflect semantic closeness rather than percentage of factual truth.
+
+
+
+  -------------------------------------------------------------------------------------------------
+
+## Step 8: LLM Integration and Prompt Engineering
+- **What was implemented**:
+  - Configured Google Gemini (`gemini-1.5-flash`) via LangChain's `ChatGoogleGenerativeAI`.
+  - Configured `temperature: 0.2` for deterministic, grounded outputs.
+  - Implemented `buildPrompt()` with explicit guardrails instructing the model to rely solely on the provided context.
+  - Implemented `generateAnswer()` to invoke the LLM and return formatted answers.
+- **Why prompt engineering and guardrails are required**:
+  - Prevents the model from hallucinating or answering from public internet memory on topics outside the approved knowledge base.
+- **Key Concepts Learned**:
+  - The fundamental distinction between embedding models (representation) and LLMs (generation).
+  - The role of temperature in controlling randomness.
+  - The necessity of testing guardrails against unanswerable queries.
