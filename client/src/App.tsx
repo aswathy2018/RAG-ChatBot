@@ -1,122 +1,115 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import { useState, useRef, useEffect } from 'react';
+import type { ChatMessageItem } from './types';
+import { ChatMessage } from './components/ChatMessage';
+import { ChatInput } from './components/ChatInput';
+import { sendChatMessage } from './services/api';
+import './index.css';
 
-function App() {
-  const [count, setCount] = useState(0)
+export function App() {
+  const [messages, setMessages] = useState<ChatMessageItem[]>([
+    {
+      id: 'welcome',
+      sender: 'bot',
+      text: "Hello! I am Knowly, your personal knowledge assistant. Ask me anything about RAG, embeddings, chunking, or vector databases!",
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    }
+  ]);
+
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  // ref to track the bottom of the chat window
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // auto-scroll to the bottom whenever messages change or loading state toggles
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages, isLoading]);
+
+
+//  handles user question submission with real backend RAG integration
+
+  const handleSendMessage = async (text: string) => {
+    setErrorMessage(null);
+
+    // append user's question
+    const userMessage: ChatMessageItem = {
+      id: `user_${Date.now()}`,
+      sender: 'user',
+      text: text,
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    };
+    setMessages((prev) => [...prev, userMessage]);
+
+    // set loading state
+    setIsLoading(true);
+
+    try {
+      // send question to Express backend
+      const result = await sendChatMessage(text);
+
+      // append bot's answer
+      const botMessage: ChatMessageItem = {
+        id: `bot_${Date.now()}`,
+        sender: 'bot',
+        text: result.answer,
+        sources: result.sources,
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      };
+      setMessages((prev) => [...prev, botMessage]);
+    } catch (err: any) {
+      setErrorMessage(err.message || 'Something went wrong. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <div className="app-container">
+      {/* Header */}
+      <header className="app-header">
+        <div className="header-badge">RAG ASSISTANT</div>
+        <h1>Knowly</h1>
+        <p className="header-subtitle">
+          Grounded knowledge assistant powered by TypeScript and Google Gemini
+        </p>
+      </header>
 
-      <div className="ticks"></div>
+      {/* Chat Messages Window */}
+      <main className="chat-window">
+        {messages.map((message) => (
+          <ChatMessage key={message.id} message={message} />
+        ))}
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+        {/* Loading Spinner */}
+        {isLoading && (
+          <div className="loading-indicator">
+            <span className="dot"></span>
+            <span className="dot"></span>
+            <span className="dot"></span>
+            <span className="loading-text">Knowly is searching documents...</span>
+          </div>
+        )}
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+        {/* Error notification */}
+        {errorMessage && (
+          <div className="error-banner">{errorMessage}</div>
+        )}
+
+        {/* Invisible anchor element to scroll down to */}
+        <div ref={messagesEndRef} />
+      </main>
+
+      {/* Input Area */}
+      <footer className="input-container">
+        <ChatInput onSendMessage={handleSendMessage} isLoading={isLoading} />
+      </footer>
+    </div>
+  );
 }
 
-export default App
+export default App;
