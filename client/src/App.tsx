@@ -74,9 +74,6 @@ export function App() {
       <header className="app-header">
         <div className="header-badge">RAG ASSISTANT</div>
         <h1>Knowly</h1>
-        <p className="header-subtitle">
-          Grounded knowledge assistant powered by TypeScript and Google Gemini
-        </p>
       </header>
 
       {/* Chat Messages Window */}

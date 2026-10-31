@@ -166,3 +166,21 @@ Knowly is a beginner-friendly Retrieval-Augmented Generation (RAG) assistant bui
 - **Key Concepts Learned**:
   - Request body parsing via `express.json()`.
   - Separation of routing concerns (`routes/`) from business logic (`controllers/`).
+
+
+
+  -------------------------------------------------------------------------------------------------
+
+## Step 12: Full-Stack Frontend-to-Backend Integration
+- **What was implemented**:
+  - Built `client/src/services/api.ts` making asynchronous `fetch()` requests to `POST http://localhost:5000/api/chat`.
+  - Connected `App.tsx` state management to live backend responses.
+  - Rendered real-time source attribution pills and similarity scores directly in the UI.
+  - Implemented client-side network error handling and loading indicators.
+- **Why full-stack separation of concerns matters**:
+  - The browser is responsible solely for presentation and user events.
+  - Sensitive operations (API keys, embedding models, vector distance calculations) remain safely encapsulated inside the Node.js backend.
+- **Key Concepts Learned**:
+  - The complete HTTP request/response cycle between React and Express.
+  - Handling Cross-Origin Resource Sharing (CORS) in development.
+  - Asynchronous UI states: pending (loading spinner), resolved (bot message), and rejected (error banner).
